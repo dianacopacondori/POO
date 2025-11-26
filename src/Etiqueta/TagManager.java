@@ -7,6 +7,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import java.util.ArrayList;
+
+import java.util.ArrayList;
+
 
 public class TagManager implements IClasificable {
     
@@ -18,17 +22,45 @@ public class TagManager implements IClasificable {
     @Override
     public void agregarEtiqueta(String idDocumento, String tag){
         
+        if (!etiquetas.containsKey(idDocumento)) {
+            etiquetas.put(idDocumento, new ArrayList<>());
+        }
+
+        List<String> lista = etiquetas.get(idDocumento);
+
+        if (!lista.contains(tag)) {
+            lista.add(tag);
+        }
     };
     
     
 
     public List<String> buscarPorEtiqueta(String tag) {
-        return null;
+        
+        List<String> resultado = new ArrayList<>();
+        
+        for (Map.Entry<String, List<String>> entry : etiquetas.entrySet()){
+            
+            if (entry.getValue().contains(tag)) {
+                resultado.add(entry.getKey());
+            }
+        }
+
+
+        return resultado;
     }
 
     @Override
     public List<String> ObtenerEtiquetas(String idDocumento) {
-        return null;
+        
+            if (etiquetas.containsKey(idDocumento)) {
+                return etiquetas.get(idDocumento);   
+                    
+            } else {
+                
+                return new ArrayList<>();          
+            }
+
     }
 
       

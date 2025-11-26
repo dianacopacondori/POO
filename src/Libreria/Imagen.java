@@ -18,7 +18,7 @@ public class Imagen extends DocumentoDigital {
     
     @Override
     public void procesarDocumento(){
-        
+        System.out.println("Renderizando la imagen en alta definicion...");
     };
 
     public String getResolucion() {

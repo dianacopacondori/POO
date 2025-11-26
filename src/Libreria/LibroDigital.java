@@ -18,7 +18,7 @@ public class LibroDigital extends DocumentoDigital {
     
     @Override
     public void procesarDocumento(){
-        
+        System.out.println("Vizualizando en modo lectura...");
     };
 
     public String getIsbn() {
