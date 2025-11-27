@@ -1,7 +1,8 @@
 
 package Libreria;
 
-import java.util.Date;
+import java.time.LocalDate;
+
 
 
 public abstract class DocumentoDigital {
@@ -9,12 +10,12 @@ public abstract class DocumentoDigital {
     protected String ID;
     protected String titulo;
     protected String autor;
-    protected Date fechaCreacion;
+    protected LocalDate fechaCreacion;
     protected double tamañoKB;
 
     public DocumentoDigital(){};
     
-    public DocumentoDigital(String ID, String titulo, String autor, Date fechaCreacion, double tamañoKB) {
+    public DocumentoDigital(String ID, String titulo, String autor, LocalDate fechaCreacion, double tamañoKB) {
         this.ID = ID;
         this.titulo = titulo;
         this.autor = autor;
@@ -42,5 +43,11 @@ public abstract class DocumentoDigital {
         this.autor = autor;
     }
     
+      @Override
+    public String toString() {
+        return String.format("[%s] %s (por %s, %s KB)", 
+            this.getClass().getSimpleName(), titulo, autor, tamañoKB);
+    }
+
     
 }
