@@ -23,8 +23,9 @@ public abstract class DocumentoDigital { //ROMINA
         this.tamañoKB = tamañoKB;
     }
     
-    public abstract void procesarDocumento();
+    public abstract void procesarDocumento(); //metodo abstracto 
 
+    // gettes & getters
     public String getTitulo() {
         return titulo;
     }

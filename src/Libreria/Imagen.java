@@ -20,10 +20,12 @@ public class Imagen extends DocumentoDigital { //Romina
 
     
     @Override
-    public void procesarDocumento(){
+    public void procesarDocumento(){ //imprime el comentario , de proceso de documento
         System.out.println("Renderizando la imagen en alta definicion...");
     };
 
+    
+    //getters & setters
     public String getResolucion() {
         return resolucion;
     }
