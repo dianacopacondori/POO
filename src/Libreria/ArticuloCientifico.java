@@ -8,7 +8,7 @@ import java.time.LocalDate;
  * Subclase de DocumentoDigital para Articulos Cientificos
  * @author cvDiana
  */
-public class ArticuloCientifico extends DocumentoDigital  {
+public class ArticuloCientifico extends DocumentoDigital  { //ROMINA
     private String revistaPublicacion;
     private String doi;
 
@@ -34,6 +34,8 @@ public class ArticuloCientifico extends DocumentoDigital  {
         this.revistaPublicacion = revistaPublicacion;
     }
     
+    
+    // DIANA
       public String serializarXML() {
         return String.format(
             "<LibroDigital id=\"%s\" titulo=\"%s\" autor=\"%s\" fecha=\"%s\" tamañoKB=\"%.2f\" revistaPublicacion=\"%s\" doi=\"%d\"/>",

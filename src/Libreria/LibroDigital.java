@@ -8,7 +8,7 @@ import java.time.LocalDate;
  * Subclase de DocumentoDigital para libros digitales
  * @author cvDiana
  */
-public class LibroDigital extends DocumentoDigital {
+public class LibroDigital extends DocumentoDigital { //ROMINA
     private String isbn;
     private int numeroPaginas;
 
@@ -32,6 +32,8 @@ public class LibroDigital extends DocumentoDigital {
     public void setIsbn(String isbn) {
         this.isbn = isbn;
     }
+    
+    // DIANA
      public String serializarXML() {
         return String.format(
             "<LibroDigital id=\"%s\" titulo=\"%s\" autor=\"%s\" fecha=\"%s\" tamañoKB=\"%.2f\" isbn=\"%s\" paginas=\"%d\"/>",

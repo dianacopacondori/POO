@@ -12,15 +12,15 @@ import java.util.ArrayList;
 import java.util.ArrayList;
 
 
-public class TagManager implements IClasificable {
+public class TagManager implements IClasificable { //TODO ROMINA
     
-    private Map<String, List<String>> etiquetas = new HashMap<>();
+    private Map<String, List<String>> etiquetas = new HashMap<>();  //colección de Map, con String para idDocumento, y una lista para las etiquetas que se guardan
 
-    public TagManager() {
+    public TagManager() { //constructor  vacio
     }
     
     @Override
-    public void agregarEtiqueta(String idDocumento, String tag){
+    public void agregarEtiqueta(String idDocumento, String tag){ //Este método se encarga de agregar las etiquetas, revisando el idDocumento.
         
         if (!etiquetas.containsKey(idDocumento)) {
             etiquetas.put(idDocumento, new ArrayList<>());
@@ -35,7 +35,7 @@ public class TagManager implements IClasificable {
     
     
 
-    public List<String> buscarPorEtiqueta(String tag) {
+    public List<String> buscarPorEtiqueta(String tag) { //Este método buscar según la etiqueta tag por toda la colección
         
         List<String> resultado = new ArrayList<>();
         
@@ -51,7 +51,7 @@ public class TagManager implements IClasificable {
     }
 
     @Override
-    public List<String> ObtenerEtiquetas(String idDocumento) {
+    public List<String> ObtenerEtiquetas(String idDocumento) { //Método encargado de buscar en la lista según el idDocumentos, que etiquetas estan relacionada
         
             if (etiquetas.containsKey(idDocumento)) {
                 return etiquetas.get(idDocumento);   

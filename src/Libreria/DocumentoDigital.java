@@ -5,7 +5,7 @@ import java.time.LocalDate;
 
 
 
-public abstract class DocumentoDigital {
+public abstract class DocumentoDigital { //ROMINA
     
     protected String ID;
     protected String titulo;
@@ -23,9 +23,7 @@ public abstract class DocumentoDigital {
         this.tamañoKB = tamañoKB;
     }
     
-    public void procesarDocumento(){
-        
-    };
+    public abstract void procesarDocumento();
 
     public String getTitulo() {
         return titulo;
@@ -43,7 +41,7 @@ public abstract class DocumentoDigital {
         this.autor = autor;
     }
     
-      @Override
+      @Override         //DIANA - Imprime en texto
     public String toString() {
         return String.format("[%s] %s (por %s, %s KB)", 
             this.getClass().getSimpleName(), titulo, autor, tamañoKB);
