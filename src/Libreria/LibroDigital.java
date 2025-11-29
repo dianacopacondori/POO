@@ -2,6 +2,7 @@
 package Libreria;
 
 import java.time.LocalDate;
+import java.util.List;
 
 
 /** 
@@ -22,7 +23,7 @@ public class LibroDigital extends DocumentoDigital { //ROMINA
     
     @Override
     public void procesarDocumento(){
-        System.out.println("Vizualizando en modo lectura...");
+        System.out.println("Vizualizando en modo lectura..." + getTitulo());
     };
 
     public String getIsbn() {
@@ -35,30 +36,23 @@ public class LibroDigital extends DocumentoDigital { //ROMINA
     
     // DIANA
      public String serializarXML() {
-        return String.format(
-            "<LibroDigital id=\"%s\" titulo=\"%s\" autor=\"%s\" fecha=\"%s\" tamañoKB=\"%.2f\" isbn=\"%s\" paginas=\"%d\"/>",
-            ID, titulo, autor, fechaCreacion, tamañoKB, isbn, numeroPaginas);
-    }
-    
-     public static LibroDigital deserializarXML(String xmlLine) {
-        // Simplificado: asume formato <LibroDigital atributos.../>
-        String clean = xmlLine.replaceAll("<LibroDigital ", "").replaceAll("/>", "").trim();
-        String[] parts = clean.split("\"\\s+");
-        java.util.Map<String, String> attrs = new java.util.HashMap<>();
-        for (String part : parts) {
-            if (part.contains("=")) {
-                String[] kv = part.split("=", 2);
-                attrs.put(kv[0].trim(), kv[1].replace("\"", "").trim());
-            }
-        }
-        return new LibroDigital(
-            attrs.get("ID"),
-            attrs.get("titulo"),
-            attrs.get("autor"),
-            java.time.LocalDate.parse(attrs.get("fecha")),
-            Double.parseDouble(attrs.get("tamañoKB")),
-            attrs.get("isbn"),
-            Integer.parseInt(attrs.get("paginas"))
+            return super.serializarXML().replace(
+            "</documento>",
+            String.format("  <isbn>%s</isbn>\n" +
+                          "  <paginas>%d</paginas>\n" +
+                          "</documento>", isbn, numeroPaginas)
         );
     }
-}
+
+    @Override
+    public void agregarEtiqueta(String idDocumento, String tag) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public List<String> ObtenerEtiquetas(String idDocumento) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+    
+  
+  }

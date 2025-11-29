@@ -2,7 +2,6 @@
 package xml;
 
 import Interfaces.IExportableXML;
-import java.io.BufferedWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -15,38 +14,42 @@ import java.util.List;
  */
 public class XMLSerializer <T extends IExportableXML> {
     
-    private final Class <T> type;
+    private List <T> elementos;
 
-    public XMLSerializer(Class<T> type) {
-        this.type=type;
+    public XMLSerializer() {
     }
-    
-    public void guardarXML(List<T> items, String rutaArchivo) throws IOException{
-        try (BufferedWriter writer = Files.newBufferedWriter(Paths.get(rutaArchivo))){
-            writer.write("<?xml version=\"1.0\" encodig=\"UTF-8\"?>\n");
-            writer.write("<Catalogo>\n");
-            for(T item : items){
-                writer.write(" " + item.serializarXML() + "\n");
-            }
-            writer.write("</Catalogo>");
-        }
-    }
+
    
-    // No genérico puro por deserialización dependiente del tipo → delegamos a subclases estáticas
-    public List<T> cargarDesdeXML(String ruta) throws IOException {
-        List<T> items = new ArrayList<>();
-        List<String> lines = Files.readAllLines(Paths.get(ruta));
-        for (String line : lines) {
-            line = line.trim();
-            if (line.startsWith("<LibroDigital")) {
-                items.add((T) Libreria.LibroDigital.deserializarXML(line));
-            } else if (line.startsWith("<ArticuloCientifico")) {
-                items.add((T) Libreria.ArticuloCientifico.deserializarXML(line));
-            } else if (line.startsWith("<Imagen")) {
-                items.add((T) com.utp.documentos.modelo.Imagen.deserializarXML(line));
-            }
-        }
-        return items;
+    public XMLSerializer(Class<T> type) {
+        this.elementos= new ArrayList<>();
+    }
+
+    public List<T> getElementos() {
+        return new ArrayList<>(elementos);
+    }
+
+    public void setElementos(List<T> elementos) {
+        this.elementos = new ArrayList<>(elementos);
     }
     
+    public String serializar() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
+        sb.append("<catalogo>\n");
+        for (T elem : elementos) {
+            sb.append("  ").append(elem.serializarXML().replaceAll("\n", "\n  ")).append("\n");
+        }
+        sb.append("</catalogo>");
+        return sb.toString();
+    }
+    
+    public void guardarArchivo(String ruta) throws IOException {
+        Files.writeString(Paths.get(ruta), serializar());
+    }
+    
+     public void cargarArchivo(String ruta) throws IOException {
+        String xml = Files.readString(Paths.get(ruta));
+        System.out.println("XML cargado desde: " + ruta);
+    }
+
 }

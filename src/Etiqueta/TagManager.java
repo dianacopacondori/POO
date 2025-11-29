@@ -2,6 +2,7 @@
 package Etiqueta;
 
 import Interfaces.IClasificable;
+import Libreria.DocumentoDigital;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -61,6 +62,13 @@ public class TagManager implements IClasificable { //TODO ROMINA
                 return new ArrayList<>();          
             }
 
+    }
+    // Método de conveniencia: asignar etiqueta a un documento (usando su IClasificable)
+    public void clasificarDocumento(IClasificable doc, String tag) {
+        if (doc instanceof DocumentoDigital d) {
+            d.agregarEtiqueta(tag);
+            agregarEtiqueta(d.getID(), tag);
+        }
     }
 
       

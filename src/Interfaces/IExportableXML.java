@@ -7,6 +7,6 @@ package Interfaces;
 public interface IExportableXML {
     
     public String serializarXML();
-    // Nota: deserializarXML() es estático en subclases por conveniencia
+    public void deserializarXML(String xml);
 
 }

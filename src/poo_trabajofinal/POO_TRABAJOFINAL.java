@@ -4,17 +4,51 @@
  */
 package poo_trabajofinal;
 
+import Catalogo.CatalogoManager;
+import Libreria.*;
+import java.time.LocalDate;
+
 /**
- *
- * @author romin
+ * 
+ * @author cvdia
  */
 public class POO_TRABAJOFINAL {
 
-    /**
-     * @param args the command line arguments
-     */
     public static void main(String[] args) {
-        // TODO code application logic here
+        CatalogoManager cm = new CatalogoManager();
+        cm.cargarDatos();
+        
+        // Crear documentos de ejemplo
+        LibroDigital libro = new LibroDigital("L001", "El Quijote", "Miguel de Cervantes",
+                LocalDate.of(1605, 1, 1), 1500.5, "978-3-16-148410-0", 980);
+        ArticuloCientifico art = new ArticuloCientifico("A001", "Deep Learning Survey", "Aníbal Sardón",
+                LocalDate.now().minusMonths(3), 2.3, "Journal of AI", "10.1234/jai.2024.001");
+        Imagen img = new Imagen("I001", "Logo UTP", "Diseñador UTP",
+                LocalDate.of(2023, 9, 15), 0.8, "1920x1080", "PNG");
+        
+         // Agregar al catálogo
+        cm.agregarDocumento(libro);
+        cm.agregarDocumento(art);
+        cm.agregarDocumento(img);
+        
+        System.out.println("\n------Procesando documentos-----");
+        for (var doc : cm.getInventario()) {
+            doc.procesarDocumento(); 
+        }
+        
+        // Etiquetas
+        cm.getTagManager().clasificarDocumento(libro, "clasico");
+        cm.getTagManager().clasificarDocumento(libro, "literatura");
+        cm.getTagManager().clasificarDocumento(art, "IA");
+
+        System.out.println("\nEtiquetas de 'El Quijote': " + libro.ObtenerEtiquetas());
+
+        // Reportes 
+        System.out.println("\n-----Reporte por tamaño (desc)-------");
+        cm.generarReporteTamaño().forEach(System.out::println);
+
+        // Guardar
+        cm.guardarDatos();
     }
     
 }
