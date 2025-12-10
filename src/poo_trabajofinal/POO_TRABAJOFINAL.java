@@ -6,6 +6,7 @@ package poo_trabajofinal;
 
 import Catalogo.CatalogoManager;
 import Libreria.*;
+import formularios.BusquedaForm;
 import java.time.LocalDate;
 
 /**
@@ -49,6 +50,14 @@ public class POO_TRABAJOFINAL {
 
         // Guardar
         cm.guardarDatos();
+        
+        BusquedaForm form = new BusquedaForm(cm);
+            
+        javax.swing.JFrame ventana = new javax.swing.JFrame("Búsqueda");
+        ventana.setContentPane(form);
+        ventana.pack();
+        ventana.setLocationRelativeTo(null); // centrar
+        ventana.setVisible(true);
+
     }
-    
 }

@@ -4,18 +4,49 @@
  */
 package formularios;
 
+import Catalogo.CatalogoManager;
+import Libreria.DocumentoDigital;
+import java.util.List;
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author romin
  */
 public class BusquedaForm extends javax.swing.JPanel {
+        private CatalogoManager catalogo;
+        
+        public BusquedaForm(CatalogoManager catalogo) {
+            initComponents();
+            this.catalogo = catalogo;
+        }
+        
+        
+        public BusquedaForm() {
+                initComponents();
+         }
+
+        
+        private void cargarTabla(List<DocumentoDigital> lista) {
+                var model = (javax.swing.table.DefaultTableModel) jTable1.getModel();
+                model.setRowCount(0); // limpia la tabla
+
+                for (DocumentoDigital d : lista) {
+                    model.addRow(new Object[]{
+                        d.getID(),
+                        d.getTitulo(),
+                        d.getAutor(),
+                        d.getClass().getSimpleName(),
+                        d.getTamañoKB(),
+                        d.getFechaCreacion()
+                    });
+                }
+         }
 
     /**
      * Creates new form NewJPanel
      */
-    public BusquedaForm() {
-        initComponents();
-    }
+    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -165,7 +196,31 @@ public class BusquedaForm extends javax.swing.JPanel {
     }//GEN-LAST:event_jComboBox1ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // TODO add your handling code here:
+          String texto = jTextField1.getText().trim();
+                    String filtro = jComboBox1.getSelectedItem().toString();
+
+                    if(texto.isEmpty()){
+                        JOptionPane.showMessageDialog(this, "Ingrese un texto para buscar");
+                        return;
+                    }
+
+                    List<DocumentoDigital> resultados = null;
+
+                    switch(filtro){
+                        case "ID" -> {
+                            DocumentoDigital d = catalogo.buscarPorID(texto);
+                            resultados = (d != null) ? List.of(d) : List.of();
+                        }
+                        case "Título" -> resultados = catalogo.buscarPorTitulo(texto);
+                        case "Autor" -> resultados = catalogo.buscarPorAutor(texto);
+                        case "Tipo" -> {
+                            resultados = catalogo.getInventario().stream()
+                                    .filter(doc -> doc.getClass().getSimpleName().equalsIgnoreCase(texto))
+                                    .toList();
+                        }
+            }
+
+            cargarTabla(resultados);
     }//GEN-LAST:event_jButton1ActionPerformed
 
 
