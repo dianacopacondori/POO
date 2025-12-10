@@ -63,7 +63,7 @@ public class TagManager implements IClasificable { //TODO ROMINA
             }
 
     }
-    // Método de conveniencia: asignar etiqueta a un documento (usando su IClasificable)
+    // asignar etiqueta a un documento (usando su IClasificable)
     public void clasificarDocumento(IClasificable doc, String tag) {
         if (doc instanceof DocumentoDigital d) {
             d.agregarEtiqueta(tag);

@@ -21,12 +21,12 @@ public class POO_TRABAJOFINAL {
         // Crear documentos de ejemplo
         LibroDigital libro = new LibroDigital("L001", "El Quijote", "Miguel de Cervantes",
                 LocalDate.of(1605, 1, 1), 1500.5, "978-3-16-148410-0", 980);
-        ArticuloCientifico art = new ArticuloCientifico("A001", "Deep Learning Survey", "Aníbal Sardón",
+        ArticuloCientifico art = new ArticuloCientifico("A001", "Deep Learning Survey", "Jose Garcia",
                 LocalDate.now().minusMonths(3), 2.3, "Journal of AI", "10.1234/jai.2024.001");
         Imagen img = new Imagen("I001", "Logo UTP", "Diseñador UTP",
                 LocalDate.of(2023, 9, 15), 0.8, "1920x1080", "PNG");
         
-         // Agregar al catálogo
+         // Agregar al catalogo
         cm.agregarDocumento(libro);
         cm.agregarDocumento(art);
         cm.agregarDocumento(img);

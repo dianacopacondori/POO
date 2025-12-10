@@ -26,7 +26,8 @@ public class CatalogoManager {
 
     private final String rutaXML = "documentos.xml";
 
-    public CatalogoManager() {}
+    public CatalogoManager() {
+    this.serializer = new XMLSerializer<>();}
 
     // -------------------------------------------
     // AGREGAR DOCUMENTO
@@ -67,6 +68,10 @@ public class CatalogoManager {
                 .filter(doc -> tipo.isInstance(doc))
                 .collect(Collectors.toList());
     }
+    
+    public DocumentoDigital buscarPorID(String id) {
+    return mapaBusqueda.get(id);
+}
 
     // -------------------------------------------
     // REPORTES
@@ -89,6 +94,7 @@ public class CatalogoManager {
     public void cargarDatos() {
         try {
             serializer.cargarArchivo("catalogo.xml");
+            System.out.println("Datos cargados desde catalogo.xml");
             // En implementación real: reconstruir inventario desde XML
         } catch (Exception e) {
             System.err.println(" No se encontro catalogo.xml");
