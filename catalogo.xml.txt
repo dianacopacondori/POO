@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<catalogo>
+  <documentos>
+    <documento tipo="Imagen" id="IMG001">
+      <titulo>Foto de Paisaje</titulo>
+      <autor>María López</autor>
+      <fecha>2024-11-05</fecha>
+      <tamañoKB>2048.0</tamañoKB>
+      <resolucion>1920x1080</resolucion>
+      <formato>JPG</formato>
+    </documento>
+
+    <documento tipo="LibroDigital" id="LD001">
+      <titulo>Introducción a POO</titulo>
+      <autor>Romina</autor>
+      <fecha>2023-09-15</fecha>
+      <tamañoKB>1024.0</tamañoKB>
+      <isbn>978-9876543210</isbn>
+      <paginas>320</paginas>
+    </documento>
+
+    <documento tipo="ArticuloCientifico" id="AC001">
+      <titulo>Avances en IA</titulo>
+      <autor>Dr. Díaz</autor>
+      <fecha>2024-07-20</fecha>
+      <tamañoKB>256.0</tamañoKB>
+      <revista>Journal of AI</revista>
+      <doi>10.1000/jai.2024.001</doi>
+    </documento>
+  </documentos>
+</catalogo>

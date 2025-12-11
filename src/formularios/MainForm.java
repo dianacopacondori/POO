@@ -5,9 +5,12 @@
 package formularios;
 
 import Catalogo.CatalogoManager;
+import java.io.File;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import xml.XMLDeserializer;
+import xml.XMLSerializer;
 
 /**
  *
@@ -15,14 +18,69 @@ import javax.swing.JOptionPane;
  */
 public class MainForm extends javax.swing.JFrame {
 
+
     private CatalogoManager catalogo;
+    private static final String RUTA_CATALOGO = "archivosXML/catalogo.xml";
 
     public MainForm() {
         initComponents();
-        setLocationRelativeTo(null);
+        // Crear catálogo compartido
         catalogo = new CatalogoManager();
+        System.out.println("FORM: Documentos recibidos = " + catalogo.getInventario().size());
 
+        // Cargar XML al iniciar
+       catalogo.cargarDatos();
+
+   
+
+        // Guardar al cerrar
+        setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowClosing(java.awt.event.WindowEvent e) {
+                guardarCatalogoXML();
+                dispose();
+                System.exit(0);
+            }
+        });
+
+        setLocationRelativeTo(null);
     }
+
+   private void cargarCatalogoXML() {
+    File archivo = new File(RUTA_CATALOGO);
+
+    if (!archivo.exists()) {
+        System.out.println("No existe el archivo de catálogo. Se inicia vacío.");
+        return;
+    }
+
+    try {
+        XMLDeserializer.cargarCatalogo(RUTA_CATALOGO, catalogo);
+        System.out.println("Catálogo cargado desde: " + RUTA_CATALOGO);
+    } catch (Exception ex) {
+        ex.printStackTrace();
+        JOptionPane.showMessageDialog(this,
+                "No se pudo cargar el catálogo XML.",
+                "Error", JOptionPane.ERROR_MESSAGE);
+    }
+    System.out.println("Documentos cargados: " + catalogo.getInventario().size());
+// Mostrar dónde está buscando NetBeans
+        System.out.println("Ruta buscada: " + archivo.getAbsolutePath());
+
+
+}
+
+private void guardarCatalogoXML() {
+    try {
+        File f = new File(RUTA_CATALOGO);
+        f.getParentFile().mkdirs(); // Crear carpeta si no existe
+        XMLSerializer.guardarCatalogo(catalogo, RUTA_CATALOGO);
+        System.out.println("Catálogo guardado en: " + RUTA_CATALOGO);
+    } catch (Exception ex) {
+        ex.printStackTrace();
+    }
+}
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -236,15 +294,14 @@ public class MainForm extends javax.swing.JFrame {
 
     private void btnModificarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnModificarActionPerformed
 
-    MantenimientoForm ventana = new MantenimientoForm(catalogo);
+        MantenimientoForm ventana = new MantenimientoForm(catalogo);
 
-    ventana.setTitle("Mantenimiento");
-    ventana.setSize(610, 510);
-    ventana.setLocationRelativeTo(this);
-    ventana.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-    ventana.setVisible(true);
+        ventana.setTitle("Mantenimiento");
+        ventana.setSize(610, 540);
+        ventana.setLocationRelativeTo(this);
+        ventana.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        ventana.setVisible(true);
     }//GEN-LAST:event_btnModificarActionPerformed
-
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

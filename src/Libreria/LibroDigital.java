@@ -38,9 +38,12 @@ public class LibroDigital extends DocumentoDigital { //ROMINA
      public String serializarXML() {
             return super.serializarXML().replace(
             "</documento>",
-            String.format("  <isbn>%s</isbn>\n" +
-                          "  <paginas>%d</paginas>\n" +
-                          "</documento>", isbn, numeroPaginas)
+            String.format(
+                "  <isbn>%s</isbn>\n" +
+                "  <paginas>%d</paginas>\n" +
+                "</documento>",
+                isbn, numeroPaginas
+            )
         );
     }
 
@@ -53,6 +56,6 @@ public class LibroDigital extends DocumentoDigital { //ROMINA
     public List<String> ObtenerEtiquetas(String idDocumento) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
-    
+
   
   }

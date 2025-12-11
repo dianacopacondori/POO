@@ -1,12 +1,11 @@
 
 package xml;
 
+import Catalogo.CatalogoManager;
 import Interfaces.IExportableXML;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
+import Libreria.DocumentoDigital;
+import java.io.PrintWriter;
+
 
 /**Clase genérica para serializar/deserializar colecciones a/desde XML.
  * @author cvDiana
@@ -14,42 +13,24 @@ import java.util.List;
  */
 public class XMLSerializer <T extends IExportableXML> {
     
-    private List <T> elementos;
+       public static void guardarCatalogo(CatalogoManager catalogo, String ruta) throws Exception {
 
-    public XMLSerializer() {
-    }
+        try (PrintWriter pw = new PrintWriter(ruta, "UTF-8")) {
 
-   
-    public XMLSerializer(Class<T> type) {
-        this.elementos= new ArrayList<>();
-    }
+            pw.println("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
+            pw.println("<catalogo>");
 
-    public List<T> getElementos() {
-        return new ArrayList<>(elementos);
-    }
+            for (DocumentoDigital d : catalogo.getInventario()) {
+                pw.println("  <documento id=\"" + d.getID() + "\" tipo=\"" + d.getClass().getSimpleName() + "\">");
+                pw.println("    <titulo>" + d.getTitulo() + "</titulo>");
+                pw.println("    <autor>" + d.getAutor() + "</autor>");
+                pw.println("    <fecha>" + d.getFechaCreacion() + "</fecha>");
+                pw.println("    <tamañoKB>" + d.getTamañoKB() + "</tamañoKB>");
+                pw.println("  </documento>");
+            }
 
-    public void setElementos(List<T> elementos) {
-        this.elementos = new ArrayList<>(elementos);
-    }
-    
-    public String serializar() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
-        sb.append("<catalogo>\n");
-        for (T elem : elementos) {
-            sb.append("  ").append(elem.serializarXML().replaceAll("\n", "\n  ")).append("\n");
+            pw.println("</catalogo>");
         }
-        sb.append("</catalogo>");
-        return sb.toString();
-    }
-    
-    public void guardarArchivo(String ruta) throws IOException {
-        Files.writeString(Paths.get(ruta), serializar());
-    }
-    
-     public void cargarArchivo(String ruta) throws IOException {
-        String xml = Files.readString(Paths.get(ruta));
-        System.out.println("XML cargado desde: " + ruta);
     }
 
 }

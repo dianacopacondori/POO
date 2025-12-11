@@ -2,7 +2,6 @@
 package Libreria;
 
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
 
 
@@ -43,10 +42,14 @@ public class Imagen extends DocumentoDigital { //Romina
     public String serializarXML(){
         return super.serializarXML().replace(
             "</documento>",
-            String.format("  <resolucion>%s</resolucion>\n" +
-                          "  <formato>%s</formato>\n" +
-                          "</documento>", resolucion, formato)
+            String.format(
+                "  <resolucion>%s</resolucion>\n" +
+                "  <formato>%s</formato>\n" +
+                "</documento>",
+                resolucion, formato
+            )
         );
+
     }
 
     @Override

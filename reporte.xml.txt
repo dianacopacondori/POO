@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<reporte>
+    <fechaGeneracion>2025-01-10</fechaGeneracion>
+    <totalDocumentos>3</totalDocumentos>
+
+    <documentos>
+
+        <documento>
+            <id>IMG001</id>
+            <titulo>Logo UTP</titulo>
+            <autor>Romina</autor>
+            <tipo>Imagen</tipo>
+            <tamanoKB>2048.0</tamanoKB>
+            <fecha>2024-06-20</fecha>
+        </documento>
+
+        <documento>
+            <id>LD001</id>
+            <titulo>El Quijote</titulo>
+            <autor>Cervantes</autor>
+            <tipo>LibroDigital</tipo>
+            <tamanoKB>1024.0</tamanoKB>
+            <fecha>2023-05-15</fecha>
+        </documento>
+
+        <documento>
+            <id>AC001</id>
+            <titulo>Deep Learning Survey</titulo>
+            <autor>Goodfellow</autor>
+            <tipo>ArticuloCientifico</tipo>
+            <tamanoKB>350.0</tamanoKB>
+            <fecha>2024-11-02</fecha>
+        </documento>
+
+    </documentos>
+</reporte>

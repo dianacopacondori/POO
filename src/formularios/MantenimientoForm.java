@@ -26,21 +26,24 @@ public class MantenimientoForm extends javax.swing.JFrame {
     }
     
     private void cargarTodosDocumentos(){
-       // Obtiene el modelo actual de la tabla
-        DefaultTableModel modelo = (DefaultTableModel) tablaDocumentos.getModel();
-        //limpiar tabla
-        modelo.setRowCount(0);
-        
-    //cargar cada documento del catálogo
-    for (DocumentoDigital doc : catalogo.getInventario()){
-    modelo.addRow(new Object[]{
-        doc.getID(),
-        doc.getTitulo(),
-        doc.getClass().getSimpleName(),
-        doc.getAutor(),
-        doc.getTamañoKB()
-    });
-}
+         if (catalogo == null) {
+        System.err.println("Error: catalogoManager no está inicializado.");
+        return;
+    }
+
+    DefaultTableModel modelo = (DefaultTableModel) tablaDocumentos.getModel();
+    modelo.setRowCount(0); // limpiar tabla
+
+    // Cargar documentos del catálogo
+    for (DocumentoDigital doc : catalogo.getInventario()) {
+        modelo.addRow(new Object[]{
+            doc.getID(),
+            doc.getTitulo(),
+            doc.getClass().getSimpleName(), // Tipo de documento
+            doc.getAutor(),
+            doc.getTamañoKB()
+        });
+    }
     }
     
     private void limpiarCampos(){
@@ -249,7 +252,7 @@ public class MantenimientoForm extends javax.swing.JFrame {
                     .addComponent(btnCancelar))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnRegresar)
-                .addContainerGap(10, Short.MAX_VALUE))
+                .addContainerGap(20, Short.MAX_VALUE))
         );
 
         jPanel1.setBackground(new java.awt.Color(102, 204, 255));
