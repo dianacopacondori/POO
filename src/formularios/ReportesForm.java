@@ -7,11 +7,9 @@ package formularios;
 import Catalogo.CatalogoManager;
 import Libreria.DocumentoDigital;
 import java.io.File;
-import java.io.IOException;
-import java.time.LocalDate;
+import java.io.PrintWriter;
 import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
@@ -32,156 +30,130 @@ private DefaultTableModel modeloTabla;
     }
     
     private void inicializarTabla(){
-        String[] columnas = {"ID", "TITULO", "AUTOR", "TIPO","TAMAÑO(KB)", "FECHA"};
-        modeloTabla = new DefaultTableModel(columnas,0){
-             @Override
-            public boolean isCellEditable(int row, int column) {
-                return false;
-            }
-        };
-        tablaReporte.setModel(modeloTabla);
+        String[] columnas = {"ID", "Título", "Autor", "Tipo", "Tamaño(KB)", "Fecha"};
+    modeloTabla = new DefaultTableModel(columnas, 0) {
+        @Override public boolean isCellEditable(int r, int c) { return false; }
+    };
+    tablaReporte.setModel(modeloTabla);
     }
     
     private void actualizarTabla(List<DocumentoDigital> documentos) {
-        modeloTabla.setRowCount(0);
-        
-        for (DocumentoDigital doc : documentos) {
-            modeloTabla.addRow(new Object[]{
-                doc.getID(),
-                doc.getTitulo(),
-                doc.getAutor(),
-                doc.getClass().getSimpleName(),
-                doc.getTamañoKB(),
-                doc.getFechaCreacion()
-            });
-        }
+          modeloTabla.setRowCount(0);
+    if (documentos == null) {
+        lblContador.setText("Documentos: 0");
+        return;
     }
-    
-      private void exportarReporte() {
-        JFileChooser fileChooser = new JFileChooser();
-        fileChooser.setDialogTitle("Guardar Reporte XML");
-        fileChooser.setSelectedFile(new java.io.File("reporte.xml"));
-        
-        if (fileChooser.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
-            try {
-                java.io.File archivo = fileChooser.getSelectedFile();
-                // Aquí iría tu lógica de exportación XML
-                JOptionPane.showMessageDialog(this, "Exportado a: " + archivo.getAbsolutePath());
-            } catch (Exception e) {
-                JOptionPane.showMessageDialog(this, "Error: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-            }
-        }
+
+    for (DocumentoDigital d : documentos) {
+        modeloTabla.addRow(new Object[]{
+                d.getID(),
+                d.getTitulo(),
+                d.getAutor(),
+                d.getClass().getSimpleName(),
+                d.getTamañoKB(),
+                d.getFechaCreacion()
+        });
+         }
+
+    lblContador.setText("Documentos: " + documentos.size());
     }
-      
-       private void mostrarDetalles(int fila) {
-        String id = modeloTabla.getValueAt(fila, 0).toString();
-        String titulo = modeloTabla.getValueAt(fila, 1).toString();
-        String autor = modeloTabla.getValueAt(fila, 2).toString();
-        
-        String detalles = String.format(
-            "ID: %s\nTítulo: %s\nAutor: %s\nTipo: %s\nTamaño: %s KB\nFecha: %s",
-            id, titulo, autor,
-            modeloTabla.getValueAt(fila, 3),
-            modeloTabla.getValueAt(fila, 4),
-            modeloTabla.getValueAt(fila, 5)
-        );
-        
-        JOptionPane.showMessageDialog(this, detalles, "Detalles del Documento", JOptionPane.INFORMATION_MESSAGE);
-    }
-       
-   private void generarReporte(int criterio) {
-    if (catalogoManager.getInventario().isEmpty()) {
+
+   private void generarReporte() {
+     if (catalogoManager == null || catalogoManager.getInventario().isEmpty()) {
         JOptionPane.showMessageDialog(this, "No hay documentos en el catálogo");
         return;
     }
-    
-    List<DocumentoDigital> documentos;
-    
-    switch (criterio) {
-        case 0: // Mayor a menor tamaño
-            documentos = catalogoManager.getInventario().stream()
-                .sorted((a, b) -> {
-                    int sizeA = (int) a.getTamañoKB();
-                    int sizeB = (int) b.getTamañoKB();
-                    return Integer.compare(sizeB, sizeA); // Descendente
-                })
-                .collect(Collectors.toList());
-            break;
-            
-        case 1: // Menor a mayor tamaño
-            documentos = catalogoManager.getInventario().stream()
-                .sorted((a, b) -> {
-                    int sizeA = (int) a.getTamañoKB();
-                    int sizeB = (int) b.getTamañoKB();
-                    return Integer.compare(sizeA, sizeB); // Ascendente
-                })
-                .collect(Collectors.toList());
-            break;
-            
-        case 2: // Más reciente
-            documentos = catalogoManager.getInventario().stream()
-                .sorted((a, b) -> {
-                    LocalDate fechaA = a.getFechaCreacion();
-                    LocalDate fechaB = b.getFechaCreacion();
-                    return fechaB.compareTo(fechaA); // Más reciente primero
-                })
-                .collect(Collectors.toList());
-            break;
-            
-        case 3: // Más antiguo
-            documentos = catalogoManager.getInventario().stream()
-                .sorted((a, b) -> {
-                    LocalDate fechaA = a.getFechaCreacion();
-                    LocalDate fechaB = b.getFechaCreacion();
-                    return fechaA.compareTo(fechaB); // Más antiguo primero
-                })
-                .collect(Collectors.toList());
-            break;
-            
-        default:
-            documentos = catalogoManager.getInventario();
+
+    List<DocumentoDigital> docs = catalogoManager.getInventario();
+
+    switch (comboOrdenar.getSelectedIndex()) {
+        case 0:
+            docs = docs.stream()
+                .sorted(Comparator.comparingDouble(DocumentoDigital::getTamañoKB).reversed())
+                .toList();
+
+        case 1:
+            docs = docs.stream()
+                .sorted(Comparator.comparingDouble(DocumentoDigital::getTamañoKB))
+                .toList();
+
+        case 2 : docs = docs.stream()
+                .sorted(Comparator.comparing(
+                        DocumentoDigital::getFechaCreacion,
+                        Comparator.nullsLast(Comparator.naturalOrder())
+                ).reversed())
+                .toList();
+
+        case 3 : docs = docs.stream()
+                .sorted(Comparator.comparing(
+                        DocumentoDigital::getFechaCreacion,
+                        Comparator.nullsLast(Comparator.naturalOrder())
+                ))
+                .toList();
     }
-    
-    actualizarTabla(documentos);
-    lblContador.setText("Documentos: " + documentos.size());
+
+    actualizarTabla(docs);
 }
    
-   private void exportarAXML(File archivo) throws IOException {
-    try (java.io.PrintWriter writer = new java.io.PrintWriter(archivo, "UTF-8")) {
-        writer.println("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
-        writer.println("<reporte>");
-        writer.println("  <fecha>" + new java.util.Date() + "</fecha>");
-        writer.println("  <total>" + modeloTabla.getRowCount() + "</total>");
-        writer.println("  <documentos>");
-        
-        for (int i = 0; i < modeloTabla.getRowCount(); i++) {
-            writer.println("    <documento id=\"" + (i+1) + "\">");
-            
-            for (int j = 0; j < modeloTabla.getColumnCount(); j++) {
-                String columna = modeloTabla.getColumnName(j);
-                String valor = modeloTabla.getValueAt(i, j).toString();
-                
-                // Etiqueta simple
-                String tag = columna.replaceAll("[^a-zA-Z0-9]", "");
-                
-                writer.println("      <" + tag + ">" + valor + "</" + tag + ">");
+   private void exportarAXML() {
+   if (modeloTabla.getRowCount() == 0) {
+        JOptionPane.showMessageDialog(this, "No hay datos para exportar.");
+        return;
+    }
+
+    JFileChooser chooser = new JFileChooser();
+    chooser.setSelectedFile(new File("reporte.xml"));
+
+    if (chooser.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
+        try (PrintWriter w = new PrintWriter(chooser.getSelectedFile(), "UTF-8")) {
+
+            w.println("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
+            w.println("<reporte>");
+            w.println("  <total>" + modeloTabla.getRowCount() + "</total>");
+            w.println("  <documentos>");
+
+            for (int i = 0; i < modeloTabla.getRowCount(); i++) {
+                w.println("    <documento>");
+                for (int c = 0; c < modeloTabla.getColumnCount(); c++) {
+                    String tag = modeloTabla.getColumnName(c).replaceAll("[^A-Za-z0-9]","");
+                    String val = String.valueOf(modeloTabla.getValueAt(i, c));
+                    w.println("      <" + tag + ">" + escapeXML(val) + "</" + tag + ">");
+                }
+                w.println("    </documento>");
             }
-            
-            writer.println("    </documento>");
+
+            w.println("  </documentos>");
+            w.println("</reporte>");
+
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, "Error: " + ex.getMessage());
         }
-        
-        writer.println("  </documentos>");
-        writer.println("</reporte>");
     }
 }
-   private String escapeXML(String input) {
-        if (input == null) return "";
-        return input.replace("&", "&amp;")
-                   .replace("<", "&lt;")
-                   .replace(">", "&gt;")
-                   .replace("\"", "&quot;")
-                   .replace("'", "&apos;");
+   private String escapeXML(String s) {
+    return s.replace("&","&amp;")
+            .replace("<","&lt;")
+            .replace(">","&gt;")
+            .replace("\"","&quot;")
+            .replace("'","&apos;");
+}
+   
+// Ver detalles (DOBLE CLIC)
+private void detallesFila(int fila) {
+    if (fila < 0) return;
+
+    String msg = "";
+    for (int c = 0; c < modeloTabla.getColumnCount(); c++) {
+        msg += modeloTabla.getColumnName(c) + ": " +
+               modeloTabla.getValueAt(fila, c) + "\n";
     }
+
+    JOptionPane.showMessageDialog(this, msg, "Detalles", JOptionPane.INFORMATION_MESSAGE);
+}
+
+public void setCatalogoManager(CatalogoManager c) {
+    this.catalogoManager = c;
+}
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -213,17 +185,17 @@ private DefaultTableModel modeloTabla;
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(114, 114, 114)
                 .addComponent(jLabel1)
-                .addGap(121, 121, 121))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(17, 17, 17)
+                .addGap(14, 14, 14)
                 .addComponent(jLabel1)
-                .addContainerGap(18, Short.MAX_VALUE))
+                .addContainerGap(21, Short.MAX_VALUE))
         );
 
         jLabel2.setText("Ordenar por:");
@@ -330,51 +302,24 @@ private DefaultTableModel modeloTabla;
             "Error", JOptionPane.ERROR_MESSAGE);
         return;
     }
-    
-    int opcion = comboOrdenar.getSelectedIndex();
-    generarReporte(opcion);
+    generarReporte();
     }//GEN-LAST:event_btnGenerarActionPerformed
 
     private void btnExportarXMLActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExportarXMLActionPerformed
-          if (modeloTabla.getRowCount() == 0) {
-        JOptionPane.showMessageDialog(this,
-            "No hay datos para exportar. Genere un reporte primero.",
-            "Sin Datos", JOptionPane.WARNING_MESSAGE);
-        return;
-    }
-    
-    // Dialogo para guardar archivo
-    JFileChooser fileChooser = new JFileChooser();
-    fileChooser.setDialogTitle("Exportar Reporte como XML");
-    fileChooser.setSelectedFile(new java.io.File("reporte_documentos.xml"));
-    
-    int resultado = fileChooser.showSaveDialog(this);
-    
-    if (resultado == JFileChooser.APPROVE_OPTION) {
-        try {
-            exportarAXML(fileChooser.getSelectedFile());
-            JOptionPane.showMessageDialog(this,
-                "Reporte exportado exitosamente",
-                "Éxito", JOptionPane.INFORMATION_MESSAGE);
-        } catch (Exception ex) {
-            JOptionPane.showMessageDialog(this,
-                "Error: " + ex.getMessage(),
-                "Error", JOptionPane.ERROR_MESSAGE);
-        }
-    }
+     exportarAXML();
     }//GEN-LAST:event_btnExportarXMLActionPerformed
 
     private void btnCerrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCerrarActionPerformed
-    setVisible(false);
+     java.awt.Window w = javax.swing.SwingUtilities.getWindowAncestor(this);
+    if (w != null) {
+        w.dispose(); // cierra el diálogo/ventana
+    }
     }//GEN-LAST:event_btnCerrarActionPerformed
 
     private void tablaReporteMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tablaReporteMouseClicked
          if (evt.getClickCount() == 2) { // Doble clic
-        int fila = tablaReporte.getSelectedRow();
-        if (fila != -1) {
-            mostrarDetalles(fila);
+         detallesFila(tablaReporte.getSelectedRow());
         }
-    }
     }//GEN-LAST:event_tablaReporteMouseClicked
 
 
