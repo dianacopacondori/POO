@@ -261,8 +261,16 @@ private void guardarCatalogoXML() {
     }//GEN-LAST:event_btnBuscarActionPerformed
 
     private void btnNuevoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNuevoActionPerformed
-        JOptionPane.showMessageDialog(this,
-                "Funcionalidad pendiente de implementar.");
+        
+        RegistroForm registro = new RegistroForm(catalogo);
+
+        JDialog dialog = new JDialog(this, "Registrar Documento", true);
+        dialog.getContentPane().add(registro);
+
+        dialog.pack(); 
+        dialog.setSize(450, 380); 
+        dialog.setLocationRelativeTo(this); 
+        dialog.setVisible(true);
     }//GEN-LAST:event_btnNuevoActionPerformed
 
     private void btnSalirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalirActionPerformed
