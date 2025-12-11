@@ -7,7 +7,10 @@ package poo_trabajofinal;
 import Catalogo.CatalogoManager;
 import Libreria.*;
 import formularios.BusquedaForm;
+import formularios.RegistroForm;
+
 import java.time.LocalDate;
+import javax.swing.JFrame;
 
 /**
  * 
@@ -58,6 +61,16 @@ public class POO_TRABAJOFINAL {
         ventana.pack();
         ventana.setLocationRelativeTo(null); // centrar
         ventana.setVisible(true);
+        
+        
+        RegistroForm regPanel = new RegistroForm(cm);
 
+        JFrame ventanaReg = new JFrame("Registro de Documentos");
+        ventanaReg.setContentPane(regPanel);
+        ventanaReg.pack();
+        ventanaReg.setLocationRelativeTo(null);
+        ventanaReg.setVisible(true);
+
+        
     }
 }
