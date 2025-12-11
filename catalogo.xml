@@ -1,11 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <catalogo>
-  <documento tipo="LibroDigital" id="L202">
-    <titulo>Peppa</titulo>
-    <autor>Pig</autor>
-    <fecha>2025-12-11</fecha>
-    <tamañoKB>150.00</tamañoKB>
-    <isbn>N/A</isbn>
-    <paginas>0</paginas>
+  <documento id="IMG001" tipo="Imagen">
+    <titulo>Foto de Paisaje</titulo>
+    <autor>María López</autor>
+    <fecha>2024-11-05</fecha>
+    <tamañoKB>2048.0</tamañoKB>
+  </documento>
+  <documento id="LD001" tipo="LibroDigital">
+    <titulo>Introducción a POO</titulo>
+    <autor>Romina</autor>
+    <fecha>2023-09-15</fecha>
+    <tamañoKB>1024.0</tamañoKB>
+  </documento>
+  <documento id="AC001" tipo="ArticuloCientifico">
+    <titulo>Avances en IA</titulo>
+    <autor>Dr. Díaz</autor>
+    <fecha>2024-07-20</fecha>
+    <tamañoKB>256.0</tamañoKB>
   </documento>
 </catalogo>

@@ -8,6 +8,7 @@ import Catalogo.CatalogoManager;
 import Libreria.DocumentoDigital;
 import java.io.File;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import javax.swing.JFileChooser;
@@ -64,32 +65,35 @@ private DefaultTableModel modeloTabla;
         return;
     }
 
-    List<DocumentoDigital> docs = catalogoManager.getInventario();
+    // Crear una copia modificable
+    List<DocumentoDigital> docs = new ArrayList<>(catalogoManager.getInventario());
 
     switch (comboOrdenar.getSelectedIndex()) {
-        case 0:
-            docs = docs.stream()
-                .sorted(Comparator.comparingDouble(DocumentoDigital::getTamañoKB).reversed())
-                .toList();
-
-        case 1:
-            docs = docs.stream()
-                .sorted(Comparator.comparingDouble(DocumentoDigital::getTamañoKB))
-                .toList();
-
-        case 2 : docs = docs.stream()
-                .sorted(Comparator.comparing(
-                        DocumentoDigital::getFechaCreacion,
-                        Comparator.nullsLast(Comparator.naturalOrder())
-                ).reversed())
-                .toList();
-
-        case 3 : docs = docs.stream()
-                .sorted(Comparator.comparing(
-                        DocumentoDigital::getFechaCreacion,
-                        Comparator.nullsLast(Comparator.naturalOrder())
-                ))
-                .toList();
+        case 0: // Tamaño descendente
+            docs.sort(Comparator.comparingDouble(DocumentoDigital::getTamañoKB).reversed());
+            break;
+            
+        case 1: // Tamaño ascendente
+            docs.sort(Comparator.comparingDouble(DocumentoDigital::getTamañoKB));
+            break;
+            
+        case 2: // Fecha descendente
+            docs.sort(Comparator.comparing(
+                    DocumentoDigital::getFechaCreacion,
+                    Comparator.nullsLast(Comparator.naturalOrder())
+            ).reversed());
+            break;
+            
+        case 3: // Fecha ascendente
+            docs.sort(Comparator.comparing(
+                    DocumentoDigital::getFechaCreacion,
+                    Comparator.nullsLast(Comparator.naturalOrder())
+            ));
+            break;
+            
+        default:
+            // Mantener orden original
+            break;
     }
 
     actualizarTabla(docs);

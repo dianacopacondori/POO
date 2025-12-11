@@ -35,7 +35,20 @@ public class CatalogoManager {
     private final String rutaXML = "documentos.xml";
 
     public CatalogoManager() {
-    this.serializer = new XMLSerializer<>();}
+    System.out.println("\n" + "=".repeat(60));
+    System.out.println("CREANDO NUEVO CATALOGO MANAGER");
+    System.out.println("=".repeat(60));
+    
+    // Inicializar vacío
+    inventario = new ArrayList<>();
+    mapaBusqueda = new HashMap<>();
+    
+    // Luego cargar
+    cargarDatos();
+    
+    System.out.println("Estado inicial del catálogo:");
+    System.out.println("- Total documentos: " + inventario.size());
+    System.out.println("=".repeat(60) + "\n");}
 
     // -------------------------------------------
     // AGREGAR DOCUMENTO
@@ -43,6 +56,7 @@ public class CatalogoManager {
     public void agregarDocumento(DocumentoDigital d) {
         inventario.add(d);
         mapaBusqueda.put(d.getID(), d);
+        guardarDatos();
     }
 
     // -------------------------------------------
@@ -53,6 +67,7 @@ public class CatalogoManager {
 
         if (d != null) {
             inventario.remove(d);
+            guardarDatos();
             return true;
         }
         return false;
@@ -102,24 +117,35 @@ public class CatalogoManager {
     public void cargarDatos() {
       
         File f = new File(RUTA_CATALOGO);
-        System.out.println("========================================================");
-    System.out.println("BUSCANDO ARCHIVO XML EN:");
-    System.out.println(f.getAbsolutePath());
-    System.out.println("Existe?: " + f.exists());
+       System.out.println("========================================================");
+    System.out.println("INFORMACIÓN DE CARGA:");
+    System.out.println("Ruta relativa: " + RUTA_CATALOGO);
+    System.out.println("Ruta absoluta: " + f.getAbsolutePath());
+    System.out.println("Directorio de trabajo: " + System.getProperty("user.dir"));
+    System.out.println("Archivo existe?: " + f.exists());
+    System.out.println("Tamaño del archivo: " + (f.exists() ? f.length() + " bytes" : "N/A"));
     System.out.println("========================================================");
-
+    
     if (!f.exists()) {
         System.out.println("No existe el archivo de catálogo: " + f.getPath());
         return;
     }
 
-    try {
-        // xml.XMLDeserializer.cargarCatalogo debe añadir los documentos al 'this' (catalogo)
+      try {
+        // LIMPIAR ANTES DE CARGAR
+        inventario.clear();
+        mapaBusqueda.clear();
+        
         xml.XMLDeserializer.cargarCatalogo(f.getPath(), this);
-        System.out.println("Datos cargados desde: " + f.getPath());
+        
+        System.out.println("Datos cargados exitosamente. Documentos: " + inventario.size());
+
     } catch (Exception e) {
-        System.err.println("Error cargando catálogo desde " + f.getPath() + ": " + e.getMessage());
+        System.err.println("✗ ERROR al cargar el catálogo:");
         e.printStackTrace();
+        // Mantener el catálogo vacío en caso de error
+        inventario.clear();
+        mapaBusqueda.clear();
     }
     }
 
@@ -133,7 +159,6 @@ public class CatalogoManager {
     if (parent != null && !parent.exists()) {
         if (!parent.mkdirs()) {
             System.err.println("No se pudo crear la carpeta: " + parent.getPath());
-            // seguimos intentando guardar en la ruta indicada (puede fallar)
         }
     }
 

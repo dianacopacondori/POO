@@ -403,10 +403,7 @@ public class MantenimientoForm extends javax.swing.JFrame {
     }//GEN-LAST:event_tablaDocumentosMouseClicked
 
     private void btnRegresarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegresarActionPerformed
-         java.awt.Window w = javax.swing.SwingUtilities.getWindowAncestor(this);
-    if (w != null) {
-        w.dispose(); // cierra el diálogo/ventana
-    }
+     this.dispose();
     }//GEN-LAST:event_btnRegresarActionPerformed
 
     
