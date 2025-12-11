@@ -6,6 +6,7 @@ package formularios;
 
 import Catalogo.CatalogoManager;
 import Libreria.DocumentoDigital;
+import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
@@ -15,22 +16,23 @@ import javax.swing.table.DefaultTableModel;
  * @author cvdia
  */
 public class MantenimientoForm extends javax.swing.JFrame {
-    private CatalogoManager catalogoManager;
+    private CatalogoManager catalogo;
     
     //  Constructor
-    public MantenimientoForm() {
-        this.catalogoManager=catalogoManager;
+    public MantenimientoForm(CatalogoManager catalogo) {
+        this.catalogo=catalogo;
         initComponents();
-        cargarTodosDocumentos();
+        cargarTodosDocumentos();//llena la tabla inicialmente
     }
     
     private void cargarTodosDocumentos(){
-        //limpiar tabla
+       // Obtiene el modelo actual de la tabla
         DefaultTableModel modelo = (DefaultTableModel) tablaDocumentos.getModel();
+        //limpiar tabla
         modelo.setRowCount(0);
         
-    //cargar desde inventario
-    for (DocumentoDigital doc : catalogoManager.getInventario()){
+    //cargar cada documento del catálogo
+    for (DocumentoDigital doc : catalogo.getInventario()){
     modelo.addRow(new Object[]{
         doc.getID(),
         doc.getTitulo(),
@@ -47,7 +49,7 @@ public class MantenimientoForm extends javax.swing.JFrame {
         txtTamano.setText("");
         txtBuscar.setText("");
         
-        comboTipo.setSelectedIndex(0);
+        comboTipo.setSelectedIndex(0);//regresa el combo al primer elemento
         
         tablaDocumentos.clearSelection();
     }
@@ -79,10 +81,12 @@ public class MantenimientoForm extends javax.swing.JFrame {
         btnActualizar = new javax.swing.JButton();
         btnEliminar = new javax.swing.JButton();
         btnCancelar = new javax.swing.JButton();
+        btnRegresar = new javax.swing.JButton();
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setPreferredSize(new java.awt.Dimension(410, 510));
 
         jPanel2.setBackground(new java.awt.Color(255, 255, 255));
 
@@ -114,6 +118,11 @@ public class MantenimientoForm extends javax.swing.JFrame {
                 "ID", "Título", "Tipo", "Autor", "Tamaño(KB)"
             }
         ));
+        tablaDocumentos.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tablaDocumentosMouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(tablaDocumentos);
 
         jLabel3.setText("Editar Documento Seleccionado: ");
@@ -149,6 +158,13 @@ public class MantenimientoForm extends javax.swing.JFrame {
             }
         });
 
+        btnRegresar.setText("Regresar");
+        btnRegresar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnRegresarActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -163,26 +179,6 @@ public class MantenimientoForm extends javax.swing.JFrame {
                         .addGap(20, 20, 20)
                         .addComponent(btnBuscar))
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGap(31, 31, 31)
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel3)
-                            .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addComponent(jLabel4)
-                                .addGap(18, 18, 18)
-                                .addComponent(txtTitulo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addComponent(jLabel7)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(txtTamano, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel5)
-                                    .addComponent(jLabel6))
-                                .addGap(18, 18, 18)
-                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(comboTipo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(txtAutor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))))
-                    .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGap(62, 62, 62)
                         .addComponent(btnActualizar)
                         .addGap(29, 29, 29)
@@ -191,8 +187,32 @@ public class MantenimientoForm extends javax.swing.JFrame {
                         .addComponent(btnCancelar))
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addContainerGap()
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 377, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(17, Short.MAX_VALUE))
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 377, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGap(31, 31, 31)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jLabel3)
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addComponent(jLabel4)
+                                .addGap(18, 18, 18)
+                                .addComponent(txtTitulo))
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addComponent(jLabel7)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(txtTamano))
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel5)
+                                    .addComponent(jLabel6))
+                                .addGap(18, 18, 18)
+                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(comboTipo, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(txtAutor))))))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(btnRegresar)
+                .addGap(31, 31, 31))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -227,7 +247,9 @@ public class MantenimientoForm extends javax.swing.JFrame {
                     .addComponent(btnActualizar)
                     .addComponent(btnEliminar)
                     .addComponent(btnCancelar))
-                .addContainerGap(7, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnRegresar)
+                .addContainerGap(10, Short.MAX_VALUE))
         );
 
         jPanel1.setBackground(new java.awt.Color(102, 204, 255));
@@ -242,7 +264,7 @@ public class MantenimientoForm extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(108, 108, 108)
                 .addComponent(jLabel1)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(138, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -267,38 +289,42 @@ public class MantenimientoForm extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGap(12, 12, 12))
+                .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void txtBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtBuscarActionPerformed
-        String criterio = txtBuscar.getText().trim();
-        if(criterio.isEmpty()){
-            JOptionPane.showMessageDialog(this, "Ingrese un criterio de BUSQUEDA");
-            return;
-        }
-        
-        DefaultTableModel modelo = (DefaultTableModel) tablaDocumentos.getModel();
-        modelo.setRowCount(0);
-        
-        //Buscar por Título
-        List<DocumentoDigital> resultados = catalogoManager.buscarPorTitulo(criterio);
-        
-        for (DocumentoDigital doc : resultados) {
-            modelo.addRow(new Object[]{
-                doc.getID(),
-                doc.getTitulo(),
-                doc.getClass().getSimpleName(),
-                doc.getAutor(),
-                doc.getTamañoKB()
-            });
-        }
-        if (resultados.isEmpty()){
-            JOptionPane.showMessageDialog(this, "No se encontraron documentos");
-        }
+       String criterio = txtBuscar.getText().trim();
+
+    if (criterio.isBlank()) {
+        JOptionPane.showMessageDialog(this, "Ingrese un ID o Título para buscar.");
+        return;
+    }
+
+    // Resultado simple: si coincide ID, si no, busca por título
+    List<DocumentoDigital> resultados = new ArrayList<>();
+
+    DocumentoDigital porID = catalogo.buscarPorID(criterio);
+    if (porID != null) {
+        resultados.add(porID);
+    } else {
+        resultados = catalogo.buscarPorTitulo(criterio);
+    }
+
+    DefaultTableModel modelo = (DefaultTableModel) tablaDocumentos.getModel();
+    modelo.setRowCount(0);
+
+    for (DocumentoDigital doc : resultados) {
+        modelo.addRow(new Object[]{
+            doc.getID(),
+            doc.getTitulo(),
+            doc.getClass().getSimpleName(),
+            doc.getAutor(),
+            doc.getTamañoKB()
+        });
+    }
     }//GEN-LAST:event_txtBuscarActionPerformed
 
     private void btnBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarActionPerformed
@@ -312,123 +338,82 @@ public class MantenimientoForm extends javax.swing.JFrame {
           return;
       }
       
-      //Obtener ID
       String id = tablaDocumentos.getValueAt(filaSeleccionada, 0).toString();
-      
-      //Buscar en el inventario
-      DocumentoDigital doc = null;
-      for(DocumentoDigital d : catalogoManager.getInventario()){
-          if(d.getID().equals(id)){
-              doc = d;
-              break;
-          }
-      }
-      
-      if (doc == null){
-          JOptionPane.showMessageDialog(this, "Documento no encontrado");
-          return;
-      }
-      
-      //actualizar campos
-      try{
-          doc.setTitulo(txtTitulo.getText());
-          doc.setAutor(txtAutor.getText());
-          doc.setTamañoKB(Integer.parseInt(txtTamano.getText()));
-          
-          DefaultTableModel modelo = (DefaultTableModel) tablaDocumentos.getModel();
-          modelo.setValueAt(txtTitulo.getText(), filaSeleccionada, 1);
-          modelo.setValueAt(txtAutor.getText(),filaSeleccionada , 3);
-          modelo.setValueAt(txtTamano.getText(), filaSeleccionada, 4);
-          
-          //guardar cambios en XML
-          catalogoManager.guardarDatos();
-          
-          JOptionPane.showMessageDialog(this, "Documento actualizado correctamente");
-      }catch (NumberFormatException e){
-          JOptionPane.showMessageDialog(this, "Tamaño debe ser un número válido","ERROR",JOptionPane.ERROR_MESSAGE);
-      }
+    DocumentoDigital doc = catalogo.buscarPorID(id);
+
+    if (doc == null) {
+        JOptionPane.showMessageDialog(this, "Error: documento no encontrado.");
+        return;
+    }
+
+    try {
+        doc.setTitulo(txtTitulo.getText());
+        doc.setAutor(txtAutor.getText());
+        doc.setTamañoKB(Double.parseDouble(txtTamano.getText()));
+
+        cargarTodosDocumentos();
+        JOptionPane.showMessageDialog(this, "Documento actualizado correctamente.");
+
+    } catch (NumberFormatException e) {
+        JOptionPane.showMessageDialog(this, "Tamaño inválido. Debe ser un número.");
+    }
   
     }//GEN-LAST:event_btnActualizarActionPerformed
 
     private void btnEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarActionPerformed
-        int filaSeleccionada = tablaDocumentos.getSelectedRow();
-    if (filaSeleccionada < 0) {
+        int fila = tablaDocumentos.getSelectedRow();
+    if (fila < 0) {
         JOptionPane.showMessageDialog(this, "Seleccione un documento para eliminar");
         return;
     }
     
-    String id = tablaDocumentos.getValueAt(filaSeleccionada, 0).toString();
-    
-    int confirmacion = JOptionPane.showConfirmDialog(
-        this,
-        "¿Está seguro de eliminar el documento con ID: " + id + "?",
-        "Confirmar eliminación",
-        JOptionPane.YES_NO_OPTION
+   String id = tablaDocumentos.getValueAt(fila, 0).toString();
+
+    int confirm = JOptionPane.showConfirmDialog(
+            this,
+            "¿Desea eliminar este documento?",
+            "Confirmar Eliminación",
+            JOptionPane.YES_NO_OPTION
     );
-    
-    if (confirmacion == JOptionPane.YES_OPTION) {
-        boolean eliminado = catalogoManager.eliminarDocumento(id);
-        
-        if (eliminado) {
-            DefaultTableModel modelo = (DefaultTableModel) tablaDocumentos.getModel();
-            modelo.removeRow(filaSeleccionada);
-            limpiarCampos();
-            
-            // Guardar cambios en XML
-            catalogoManager.guardarDatos();
-            
-            JOptionPane.showMessageDialog(this, "Documento eliminado correctamente");
-        } else {
-            JOptionPane.showMessageDialog(this, "Error al eliminar documento", "Error", JOptionPane.ERROR_MESSAGE);
-        }
+
+    if (confirm == JOptionPane.YES_OPTION) {
+        catalogo.eliminarDocumento(id);
+        cargarTodosDocumentos();
+        limpiarCampos();
+        JOptionPane.showMessageDialog(this, "Documento eliminado.");
     }
+    
     }//GEN-LAST:event_btnEliminarActionPerformed
 
     private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
-        limpiarCampos();
+    limpiarCampos();
     }//GEN-LAST:event_btnCancelarActionPerformed
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(MantenimientoForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(MantenimientoForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(MantenimientoForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(MantenimientoForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-        //</editor-fold>
+    private void tablaDocumentosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tablaDocumentosMouseClicked
+        int fila = tablaDocumentos.getSelectedRow();
+    if (fila == -1) return;
 
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new MantenimientoForm().setVisible(true);
-            }
-        });
+    txtTitulo.setText(tablaDocumentos.getValueAt(fila, 1).toString());
+    txtAutor.setText(tablaDocumentos.getValueAt(fila, 3).toString());
+    comboTipo.setSelectedItem(tablaDocumentos.getValueAt(fila, 2).toString());
+    txtTamano.setText(tablaDocumentos.getValueAt(fila, 4).toString());
+    }//GEN-LAST:event_tablaDocumentosMouseClicked
+
+    private void btnRegresarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegresarActionPerformed
+         java.awt.Window w = javax.swing.SwingUtilities.getWindowAncestor(this);
+    if (w != null) {
+        w.dispose(); // cierra el diálogo/ventana
     }
+    }//GEN-LAST:event_btnRegresarActionPerformed
+
+    
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnActualizar;
     private javax.swing.JButton btnBuscar;
     private javax.swing.JButton btnCancelar;
     private javax.swing.JButton btnEliminar;
+    private javax.swing.JButton btnRegresar;
     private javax.swing.JComboBox<String> comboTipo;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;

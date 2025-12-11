@@ -14,40 +14,39 @@ import javax.swing.JOptionPane;
  * @author romin
  */
 public class BusquedaForm extends javax.swing.JPanel {
-        private CatalogoManager catalogo;
-        
-        public BusquedaForm(CatalogoManager catalogo) {
-            initComponents();
-            this.catalogo = catalogo;
+
+    private CatalogoManager catalogo;
+
+    public BusquedaForm(CatalogoManager catalogo) {
+        initComponents();
+        this.catalogo=catalogo;
+    }
+
+
+    private void cargarTabla(List<DocumentoDigital> lista) {
+        if (lista == null) {
+            lista = List.of();
         }
-        
-        
-        public BusquedaForm() {
-                initComponents();
-         }
+        var model = (javax.swing.table.DefaultTableModel) jTable1.getModel();
+        model.setRowCount(0); // limpia la tabla
 
-        
-        private void cargarTabla(List<DocumentoDigital> lista) {
-                var model = (javax.swing.table.DefaultTableModel) jTable1.getModel();
-                model.setRowCount(0); // limpia la tabla
+        java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("dd/MM/yyyy");
 
-                for (DocumentoDigital d : lista) {
-                    model.addRow(new Object[]{
-                        d.getID(),
-                        d.getTitulo(),
-                        d.getAutor(),
-                        d.getClass().getSimpleName(),
-                        d.getTamañoKB(),
-                        d.getFechaCreacion()
-                    });
-                }
-         }
+        for (DocumentoDigital d : lista) {
+            model.addRow(new Object[]{
+                d.getID(),
+                d.getTitulo(),
+                d.getAutor(),
+                d.getClass().getSimpleName(),
+                String.format("%.2f KB", d.getTamañoKB()), // formateo tamaño
+                d.getFechaCreacion() == null ? "" : sdf.format(d.getFechaCreacion())
+            });
+        }
+    }
 
     /**
      * Creates new form NewJPanel
      */
-    
-
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -133,6 +132,11 @@ public class BusquedaForm extends javax.swing.JPanel {
 
         jButton2.setBackground(new java.awt.Color(51, 204, 255));
         jButton2.setText("Cerrar");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -196,32 +200,41 @@ public class BusquedaForm extends javax.swing.JPanel {
     }//GEN-LAST:event_jComboBox1ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-          String texto = jTextField1.getText().trim();
-                    String filtro = jComboBox1.getSelectedItem().toString();
+        String texto = jTextField1.getText().trim();
+        String filtro = jComboBox1.getSelectedItem().toString();
 
-                    if(texto.isEmpty()){
-                        JOptionPane.showMessageDialog(this, "Ingrese un texto para buscar");
-                        return;
-                    }
+        if (texto.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Ingrese un texto para buscar");
+            return;
+        }
 
-                    List<DocumentoDigital> resultados = null;
+        List<DocumentoDigital> resultados = null;
 
-                    switch(filtro){
-                        case "ID" -> {
-                            DocumentoDigital d = catalogo.buscarPorID(texto);
-                            resultados = (d != null) ? List.of(d) : List.of();
-                        }
-                        case "Título" -> resultados = catalogo.buscarPorTitulo(texto);
-                        case "Autor" -> resultados = catalogo.buscarPorAutor(texto);
-                        case "Tipo" -> {
-                            resultados = catalogo.getInventario().stream()
-                                    .filter(doc -> doc.getClass().getSimpleName().equalsIgnoreCase(texto))
-                                    .toList();
-                        }
+        switch (filtro) {
+            case "ID" -> {
+                DocumentoDigital d = catalogo.buscarPorID(texto);
+                resultados = (d != null) ? List.of(d) : List.of();
             }
+            case "Título" ->
+                resultados = catalogo.buscarPorTitulo(texto);
+            case "Autor" ->
+                resultados = catalogo.buscarPorAutor(texto);
+            case "Tipo" -> {
+                resultados = catalogo.getInventario().stream()
+                        .filter(doc -> doc.getClass().getSimpleName().equalsIgnoreCase(texto))
+                        .toList();
+            }
+        }
 
-            cargarTabla(resultados);
+        cargarTabla(resultados);
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        java.awt.Window w = javax.swing.SwingUtilities.getWindowAncestor(this);
+    if (w != null) {
+        w.dispose(); // cierra el diálogo/ventana
+    }
+    }//GEN-LAST:event_jButton2ActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

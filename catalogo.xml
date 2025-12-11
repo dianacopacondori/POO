@@ -1,27 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <catalogo>
-  <documento tipo="LibroDigital" id="L001">
-    <titulo>El Quijote</titulo>
-    <autor>Miguel de Cervantes</autor>
-    <fecha>1605-01-01</fecha>
-    <tamañoKB>1500.50</tamañoKB>
-    <isbn>978-3-16-148410-0</isbn>
-    <paginas>980</paginas>
-  </documento>
-  <documento tipo="ArticuloCientifico" id="A001">
-    <titulo>Deep Learning Survey</titulo>
-    <autor>Jose Garcia</autor>
-    <fecha>2025-09-11</fecha>
-    <tamañoKB>2.30</tamañoKB>
-    <revista>Journal of AI</revista>
-    <doi>10.1234/jai.2024.001</doi>
-  </documento>
-  <documento tipo="Imagen" id="I001">
-    <titulo>Logo UTP</titulo>
-    <autor>Diseñador UTP</autor>
-    <fecha>2023-09-15</fecha>
-    <tamañoKB>0.80</tamañoKB>
-    <resolucion>1920x1080</resolucion>
-    <formato>PNG</formato>
+  <documento tipo="LibroDigital" id="L202">
+    <titulo>Peppa</titulo>
+    <autor>Pig</autor>
+    <fecha>2025-12-11</fecha>
+    <tamañoKB>150.00</tamañoKB>
+    <isbn>N/A</isbn>
+    <paginas>0</paginas>
   </documento>
 </catalogo>
